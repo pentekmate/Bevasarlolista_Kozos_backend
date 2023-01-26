@@ -1,2 +1,1 @@
-# Bevasarlolista_Kozos_backend
-Bevasarlolista_Kozos_backend
+IMÁDOM A GITHUBOT <3
