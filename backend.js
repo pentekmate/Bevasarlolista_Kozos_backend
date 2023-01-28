@@ -20,7 +20,7 @@ app.use(cors())
 app.get('/', (req, res) => {
   res.send('Hello World!')
 })
-
+// Összes listalekérése
 app.get('/listak', (req, res) => {
   kapcsolat()
 
@@ -32,7 +32,9 @@ app.get('/listak', (req, res) => {
   })
   connection.end()
 })
+//Összes felhasználó adatainak lekérése
 
+//Login.jsben használt, belépésnél összehasonlítja az adatokat
 app.get('/felhasznalok', (req, res) => {
   kapcsolat()
 
@@ -44,6 +46,10 @@ app.get('/felhasznalok', (req, res) => {
   })
   connection.end()
 })
+
+//Regisztrációs adatokat visz fel az adatbázisba
+
+//Regisztracio.jsben használom
 app.post('/regisztracio', (req, res) => {
   kapcsolat()
 
@@ -58,7 +64,8 @@ app.post('/regisztracio', (req, res) => {
   connection.end()
 
 })
-
+//A Lista_input.jsben lévő 2tömb (data,segeddata) adataid fetcheli fel adatbázisba
+//Lista_input.jsben használom
 app.post('/tartalomfel', (req, res) => {
   kapcsolat()
 
@@ -73,6 +80,13 @@ app.post('/tartalomfel', (req, res) => {
   connection.end()
 
 })
+
+//Lekérdezi a felhasználó által létrehozott listákat
+
+//Profilom.jsben használom
+//Felvitel.js
+
+
 app.post('/felhasznalolistai', (req, res) => {
   kapcsolat()
 
@@ -88,7 +102,10 @@ app.post('/felhasznalolistai', (req, res) => {
 
 })
 
+//Listat töröl
 
+
+//Szerkeszt.js
 
 app.delete('/regilistatorles', (req, res) => {
   kapcsolat()
@@ -105,7 +122,9 @@ app.delete('/regilistatorles', (req, res) => {
 
 })
 
+//Lista arat tölti fel utólagosan a Szerkeszt.jsben
 
+//Szserkeszt.js
 app.post('/arfel', (req, res) => {
   kapcsolat()
 
@@ -133,6 +152,10 @@ app.get('/aktualis', (req, res) => {
   })
   connection.end()
 })
+//Listat töröl
+
+
+//Szerkeszt.js
 app.delete('/listatorles', (req, res) => {
   kapcsolat()
 
@@ -147,7 +170,36 @@ app.delete('/listatorles', (req, res) => {
   connection.end()
 
 })
+app.post('/felhasznaloossz', (req, res) => {
+  kapcsolat()
 
+  connection.query('SELECT count(listak_nev) as osszes  FROM `listak` WHERE `letrehozofelhasznalo` = "'+req.body.bevitel1+'";', function (err, rows, fields) {
+    if (err)
+      console.log(err)
+    else {
+      console.log(rows[0])
+      res.send(rows)
+      
+    }
+  })
+  connection.end()
+
+})
+//regisztráciodatum
+app.post('/regisztraciodatum', (req, res) => {
+  kapcsolat()
+
+  connection.query('SELECT YEAR(`felhasznalo_regisztrdatum`)as"datum",MONTH(felhasznalo_regisztrdatum) as "honap"  FROM `felhasznalo` WHERE `felhasznalo_nev`="'+req.body.bevitel1+'"', function (err, rows, fields) {
+    if (err)
+      console.log(err)
+    else {
+      console.log(rows[0])
+      res.send(rows)
+    }
+  })
+  connection.end()
+
+})
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
