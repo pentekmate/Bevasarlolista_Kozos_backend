@@ -69,7 +69,7 @@ app.post('/regisztracio', (req, res) => {
 app.post('/tartalomfel', (req, res) => {
   kapcsolat()
 
-  connection.query('INSERT INTO `listak` VALUES (NULL, "' + req.body.bevitel1 + '",CURDATE(), "' + req.body.bevitel2 + '","' + req.body.bevitel3 + '","");', function (err, rows, fields) {
+  connection.query('INSERT INTO `listak` VALUES (NULL, "' + req.body.bevitel1 + '",CURDATE(), "' + req.body.bevitel2 + '","' + req.body.bevitel3 + '",0);', function (err, rows, fields) {
     if (err)
       console.log(err)
     else {
@@ -90,7 +90,7 @@ app.post('/tartalomfel', (req, res) => {
 app.post('/felhasznalolistai', (req, res) => {
   kapcsolat()
 
-  connection.query('SELECT * FROM listak WHERE letrehozofelhasznalo like"' + req.body.bevitel1 + '"', function (err, rows, fields) {
+  connection.query('SELECT * FROM listak WHERE letrehozofelhasznalo like"' + req.body.bevitel1 + '" order by listak_datum desc', function (err, rows, fields) {
     if (err)
       console.log(err)
     else {
@@ -129,12 +129,12 @@ app.post('/arfel', (req, res) => {
   kapcsolat()
 
   connection.query('UPDATE listak SET listak_ar= "' + req.body.bevitel3 + '" WHERE listak_id = "' + req.body.bevitel4 + '"', function (err, rows, fields) {
-      if (err)
-          console.log(err)
-      else {
-          console.log(rows)
-          res.send(rows)
-      }
+    if (err)
+      console.log(err)
+    else {
+      console.log(rows)
+      res.send(rows)
+    }
   })
   connection.end()
 
@@ -159,13 +159,13 @@ app.get('/aktualis', (req, res) => {
 app.delete('/listatorles', (req, res) => {
   kapcsolat()
 
-  connection.query('DELETE FROM listak WHERE listak_id = "'+req.body.bevitel5+'"',(err, rows, fields)=> {
-      if (err)
-          console.log(err)
-      else {
-          console.log(rows)
-          res.send(rows)
-      }
+  connection.query('DELETE FROM listak WHERE listak_id = "' + req.body.bevitel5 + '"', (err, rows, fields) => {
+    if (err)
+      console.log(err)
+    else {
+      console.log(rows)
+      res.send(rows)
+    }
   })
   connection.end()
 
@@ -173,13 +173,13 @@ app.delete('/listatorles', (req, res) => {
 app.post('/felhasznaloossz', (req, res) => {
   kapcsolat()
 
-  connection.query('SELECT count(listak_nev) as osszes  FROM `listak` WHERE `letrehozofelhasznalo` = "'+req.body.bevitel1+'";', function (err, rows, fields) {
+  connection.query('SELECT count(listak_nev) as osszes  FROM `listak` WHERE `letrehozofelhasznalo` = "' + req.body.bevitel1 + '";', function (err, rows, fields) {
     if (err)
       console.log(err)
     else {
       console.log(rows[0])
       res.send(rows)
-      
+
     }
   })
   connection.end()
@@ -189,7 +189,7 @@ app.post('/felhasznaloossz', (req, res) => {
 app.post('/regisztraciodatum', (req, res) => {
   kapcsolat()
 
-  connection.query('SELECT YEAR(`felhasznalo_regisztrdatum`)as"datum",MONTH(felhasznalo_regisztrdatum) as "honap"  FROM `felhasznalo` WHERE `felhasznalo_nev`="'+req.body.bevitel1+'"', function (err, rows, fields) {
+  connection.query('SELECT YEAR(`felhasznalo_regisztrdatum`)as"datum",MONTH(felhasznalo_regisztrdatum) as "honap"  FROM `felhasznalo` WHERE `felhasznalo_nev`="' + req.body.bevitel1 + '"', function (err, rows, fields) {
     if (err)
       console.log(err)
     else {
