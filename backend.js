@@ -69,7 +69,7 @@ app.post('/regisztracio', (req, res) => {
 app.post('/tartalomfel', (req, res) => {
   kapcsolat()
 
-  connection.query('INSERT INTO `listak` VALUES (NULL, "' + req.body.bevitel1 + '",CURDATE(), "' + req.body.bevitel2 + '","' + req.body.bevitel3 + '",0);', function (err, rows, fields) {
+  connection.query('INSERT INTO `listak` VALUES (NULL, "' + req.body.bevitel1 + '",CURDATE(), "' + req.body.bevitel2 + '","' + req.body.bevitel3 + '",0,0);', function (err, rows, fields) {
     if (err)
       console.log(err)
     else {
@@ -87,10 +87,25 @@ app.post('/tartalomfel', (req, res) => {
 //Felvitel.js
 
 
-app.post('/felhasznalolistai', (req, res) => {
+app.post('/felhasznalolistainincskesz', (req, res) => {
   kapcsolat()
 
-  connection.query('SELECT * FROM listak WHERE letrehozofelhasznalo like"' + req.body.bevitel1 + '" order by listak_datum desc', function (err, rows, fields) {
+  connection.query('SELECT * FROM listak WHERE letrehozofelhasznalo like"' + req.body.bevitel1 + '" and listak_kesz=0 order by listak_datum desc', function (err, rows, fields) {
+    if (err)
+      console.log(err)
+    else {
+      console.log(rows)
+      res.send(rows)
+    }
+  })
+  connection.end()
+
+})
+
+app.post('/felhasznalolistaikesz', (req, res) => {
+  kapcsolat()
+
+  connection.query('SELECT * FROM listak WHERE letrehozofelhasznalo like"' + req.body.bevitel1 + '" and listak_kesz=1 order by listak_datum desc', function (err, rows, fields) {
     if (err)
       console.log(err)
     else {
@@ -129,6 +144,21 @@ app.post('/arfel', (req, res) => {
   kapcsolat()
 
   connection.query('UPDATE listak SET listak_ar= "' + req.body.bevitel3 + '" WHERE listak_id = "' + req.body.bevitel4 + '"', function (err, rows, fields) {
+    if (err)
+      console.log(err)
+    else {
+      console.log(rows)
+      res.send(rows)
+    }
+  })
+  connection.end()
+
+})
+
+app.post('/listabefejezese', (req, res) => {
+  kapcsolat()
+
+  connection.query('UPDATE listak SET listak_ar= "' + req.body.bevitel3 + '", listak_kesz=1 WHERE listak_id = "' + req.body.bevitel4 + '"', function (err, rows, fields) {
     if (err)
       console.log(err)
     else {
