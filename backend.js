@@ -3,6 +3,7 @@ const mysql = require('mysql')
 const app = express()
 const port = 3000
 const cors = require('cors')
+const bcrypt = require('bcryptjs');
 var connection
 
 function kapcsolat() {
@@ -35,14 +36,32 @@ app.get('/listak', (req, res) => {
 //Összes felhasználó adatainak lekérése
 
 //Login.jsben használt, belépésnél összehasonlítja az adatokat
-app.get('/felhasznalok', (req, res) => {
+app.post('/felhasznalok', (req, res) => {
   kapcsolat()
 
-  connection.query('SELECT * from felhasznalo', (err, rows, fields) => {
-    if (err) throw err
-
-
-    res.send(rows)
+  connection.query('SELECT * FROM `felhasznalo` WHERE `felhasznalo_nev` ="'+req.body.bevitel1+'" ;', function  (err, rows, fields) {
+    if (err)
+      console.log(err)
+    else {
+     if(rows.length>0)
+     {
+      const JelszoVissza=bcrypt.compare(req.body.bevitel2,rows[0].felhasznalo_jelszo)
+      .then((talalt)=>{
+        if(talalt)
+        {
+          res.send(true)
+        }
+        else
+        {
+          res.send(false)
+        }
+      })
+     }
+     else{
+      res.send(false)
+     }
+    }
+   
   })
   connection.end()
 })
@@ -50,10 +69,11 @@ app.get('/felhasznalok', (req, res) => {
 //Regisztrációs adatokat visz fel az adatbázisba
 
 //Regisztracio.jsben használom
-app.post('/regisztracio', (req, res) => {
+app.post('/regisztracio', async (req, res) => {
   kapcsolat()
 
-  connection.query('INSERT INTO `listak` VALUES (NULL, "' + req.body.bevitel1 + '",CURDATE(), "' + req.body.bevitel2 + '");', function (err, rows, fields) {
+  const jelszo=await bcrypt.hash(req.body.bevitel2,10)
+  connection.query('INSERT INTO `felhasznalo` VALUES (NULL, "' + req.body.bevitel1 + '" ,"' + jelszo + '",CURDATE());', function (err, rows, fields) {
     if (err)
       console.log(err)
     else {
@@ -69,7 +89,7 @@ app.post('/regisztracio', (req, res) => {
 app.post('/tartalomfel', (req, res) => {
   kapcsolat()
 
-  connection.query('INSERT INTO `listak` VALUES (NULL, "' + req.body.bevitel1 + '",CURDATE(), "' + req.body.bevitel2 + '","' + req.body.bevitel3 + '",0,0);', function (err, rows, fields) {
+  connection.query('INSERT INTO `listak` VALUES (NULL, "' + req.body.bevitel1 + '",CURDATE(), "' + req.body.bevitel2 + '",0,"' + req.body.bevitel3 + '",0);', function (err, rows, fields) {
     if (err)
       console.log(err)
     else {
