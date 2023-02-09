@@ -22,10 +22,10 @@ app.get('/', (req, res) => {
   res.send('Hello World!')
 })
 // Összes listalekérése
-app.get('/listak', (req, res) => {
+app.get('/felhasznalo', (req, res) => {
   kapcsolat()
 
-  connection.query('SELECT * from listak', (err, rows, fields) => {
+  connection.query('SELECT * from felhasznalo where felhasznalo_nev="' + req.body.bevitel1 + '"', (err, rows, fields) => {
     if (err) throw err
 
 
@@ -36,7 +36,7 @@ app.get('/listak', (req, res) => {
 //Összes felhasználó adatainak lekérése
 
 //Login.jsben használt, belépésnél összehasonlítja az adatokat
-app.post('/felhasznalok', (req, res) => {
+app.post('/login', (req, res) => {
   kapcsolat()
 
   connection.query('SELECT * FROM `felhasznalo` WHERE `felhasznalo_nev` ="' + req.body.bevitel1 + '" ;', function (err, rows, fields) {
