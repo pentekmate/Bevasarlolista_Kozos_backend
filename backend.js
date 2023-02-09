@@ -39,29 +39,26 @@ app.get('/listak', (req, res) => {
 app.post('/felhasznalok', (req, res) => {
   kapcsolat()
 
-  connection.query('SELECT * FROM `felhasznalo` WHERE `felhasznalo_nev` ="'+req.body.bevitel1+'" ;', function  (err, rows, fields) {
+  connection.query('SELECT * FROM `felhasznalo` WHERE `felhasznalo_nev` ="' + req.body.bevitel1 + '" ;', function (err, rows, fields) {
     if (err)
       console.log(err)
     else {
-     if(rows.length>0)
-     {
-      const JelszoVissza=bcrypt.compare(req.body.bevitel2,rows[0].felhasznalo_jelszo)
-      .then((talalt)=>{
-        if(talalt)
-        {
-          res.send(true)
-        }
-        else
-        {
-          res.send(false)
-        }
-      })
-     }
-     else{
-      res.send(false)
-     }
+      if (rows.length > 0) {
+        const JelszoVissza = bcrypt.compare(req.body.bevitel2, rows[0].felhasznalo_jelszo)
+          .then((talalt) => {
+            if (talalt) {
+              res.send(true)
+            }
+            else {
+              res.send(false)
+            }
+          })
+      }
+      else {
+        res.send(false)
+      }
     }
-   
+
   })
   connection.end()
 })
@@ -72,7 +69,7 @@ app.post('/felhasznalok', (req, res) => {
 app.post('/regisztracio', async (req, res) => {
   kapcsolat()
 
-  const jelszo=await bcrypt.hash(req.body.bevitel2,10)
+  const jelszo = await bcrypt.hash(req.body.bevitel2, 10)
   connection.query('INSERT INTO `felhasznalo` VALUES (NULL, "' + req.body.bevitel1 + '" ,"' + jelszo + '",CURDATE());', function (err, rows, fields) {
     if (err)
       console.log(err)
@@ -89,7 +86,7 @@ app.post('/regisztracio', async (req, res) => {
 app.post('/tartalomfel', (req, res) => {
   kapcsolat()
 
-  connection.query('INSERT INTO `listak` VALUES (NULL, "' + req.body.bevitel1 + '",CURDATE(), "' + req.body.bevitel2 + '",0,"' + req.body.bevitel3 + '",0);', function (err, rows, fields) {
+  connection.query('INSERT INTO `listak` VALUES (NULL, "' + req.body.bevitel1 + '",CURDATE(),NULL, "' + req.body.bevitel2 + '","' + req.body.bevitel3 + '",0,0);', function (err, rows, fields) {
     if (err)
       console.log(err)
     else {
@@ -178,7 +175,7 @@ app.post('/arfel', (req, res) => {
 app.post('/listabefejezese', (req, res) => {
   kapcsolat()
 
-  connection.query('UPDATE listak SET listak_ar= "' + req.body.bevitel3 + '", listak_kesz=1 WHERE listak_id = "' + req.body.bevitel4 + '"', function (err, rows, fields) {
+  connection.query('UPDATE listak SET listak_ar= "' + req.body.bevitel3 + '",listak_keszdatum=CURDATE(), listak_kesz=1 WHERE listak_id = "' + req.body.bevitel4 + '"', function (err, rows, fields) {
     if (err)
       console.log(err)
     else {
