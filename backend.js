@@ -124,7 +124,7 @@ app.post('/tartalomfel', (req, res) => {
 app.post('/felhasznalolistainincskesz', (req, res) => {
   kapcsolat()
 
-  connection.query('SELECT * FROM listak WHERE listak_felhasznaloid=' + req.body.bevitel1 + ' and listak_kesz=0 order by listak_datum desc', function (err, rows, fields) {
+  connection.query('SELECT * FROM listak WHERE listak_felhasznaloid=' + req.body.bevitel1 + ' and listak_kesz=0 order by listak_datum asc', function (err, rows, fields) {
     if (err)
       console.log(err)
     else {
@@ -139,7 +139,7 @@ app.post('/felhasznalolistainincskesz', (req, res) => {
 app.post('/felhasznalolistaikesz', (req, res) => {
   kapcsolat()
 
-  connection.query('SELECT * FROM listak WHERE listak_felhasznaloid =' + req.body.bevitel1 + ' and listak_kesz=1 order by listak_datum desc', function (err, rows, fields) {
+  connection.query('SELECT * FROM listak WHERE listak_felhasznaloid =' + req.body.bevitel1 + ' and listak_kesz=1 order by listak_datum asc', function (err, rows, fields) {
     if (err)
       console.log(err)
     else {
@@ -452,6 +452,20 @@ app.post('/listakdatumszerintcsokk', (req, res) => {
     res.send(rows)
   })
   connection.end()
+})
+app.post('/felhasznalolistainincskesz3', (req, res) => {
+  kapcsolat()
+
+  connection.query('SELECT * FROM listak WHERE listak_felhasznaloid=' + req.body.bevitel1 + ' and listak_kesz=0 order by listak_datum asc LIMIT 5', function (err, rows, fields) {
+    if (err)
+      console.log(err)
+    else {
+      console.log(rows)
+      res.send(rows)
+    }
+  })
+  connection.end()
+
 })
 
 app.listen(port, () => {
