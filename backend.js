@@ -87,7 +87,7 @@ app.post('/regisztracio', async (req, res) => {
   kapcsolat()
 
   const jelszo = await bcrypt.hash(req.body.bevitel2, 10)
-  connection.query("INSERT INTO `felhasznalo` VALUES (NULL, '" + req.body.bevitel1 + "' ,'" + jelszo + "',CURDATE(),'1');", function (err, rows, fields) {
+  connection.query("INSERT INTO `felhasznalo` VALUES (NULL, '" + req.body.bevitel1 + "' ,'" + jelszo + "',CURDATE(),'1',0);", function (err, rows, fields) {
     if (err)
       console.log(err)
     else {
@@ -460,6 +460,35 @@ app.post('/felhasznalolistainincskesz3', (req, res) => {
     if (err)
       console.log(err)
     else {
+      console.log(rows)
+      res.send(rows)
+    }
+  })
+  connection.end()
+
+})
+app.post('/felhasznaloosszeskesz', (req, res) => {
+  kapcsolat()
+
+  connection.query('SELECT felhasznalo_keszlistakszama FROM felhasznalo WHERE felhasznalo_id=' + req.body.bevitel1 + ' ', function (err, rows, fields) {
+    if (err)
+      console.log(err)
+    else {
+      console.log(rows)
+      res.send(rows)
+    }
+  })
+  connection.end()
+
+})
+app.post('/keszlistafrissites', (req, res) => {
+  kapcsolat()
+
+  connection.query('UPDATE `felhasznalo` SET `felhasznalo_keszlistakszama`=' + req.body.bevitel1 + ' WHERE `felhasznalo_id`=' + req.body.bevitel2 + ';', function (err, rows, fields) {
+    if (err)
+      console.log(err)
+    else {
+
       console.log(rows)
       res.send(rows)
     }
